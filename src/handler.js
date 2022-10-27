@@ -16,6 +16,7 @@
 const { nanoid } = require('nanoid');
 const books = require('./books');
 
+// POST Method - API save books or add books
 const addBookHandler = (request, h) => {
   const {
     name,
@@ -90,6 +91,7 @@ const addBookHandler = (request, h) => {
   return response;
 };
 
+// GET Method - API displays the whole book
 const getAllBooksHandler = (request, h) => {
   const { name, reading, finished } = request.query;
   let filteredBooks = books;
@@ -122,4 +124,31 @@ const getAllBooksHandler = (request, h) => {
   return response;
 };
 
-module.exports = { addBookHandler, getAllBooksHandler };
+// GET method by ID - API displays book details
+const getBooksByIdHandler = (request, h) => {
+  const { id } = request.params;
+
+  const book = books.filter((n) => n.id === id)[0];
+
+  if (book !== undefined) {
+    return {
+      status: 'success',
+      data: {
+        book,
+      },
+    };
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Buku tidak ditemukan',
+  });
+  response.code(404);
+  return response;
+};
+
+module.exports = {
+  addBookHandler,
+  getAllBooksHandler,
+  getBooksByIdHandler,
+};
